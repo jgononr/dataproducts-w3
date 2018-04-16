@@ -9,21 +9,34 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ```
 
-## R Markdown
+## Plotly
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+This project uses the `mtdata` dataset to plot 'weight', 'mpg' and
+'horsepower' as a 3D scatterplot. A circle or a diamond is used to
+show if the car uses automatic or manual transmission and the color
+indicates how many cylinders the engine has.
 
 ```{r bodtrees_download, cache = TRUE}
 df <- mtcars
+df$transmission <- "Automatic"
+df$transmission[df$am == 0] <- "Manual"
+df$transmission <- as.factor(df$transmission)
+df$cyl <- as.factor(df$cyl)
 ```
 
-```{r bodtrees_datacleaning, cache = TRUE}
-library(dplyr)
-
-```
 
 ```{r leaflet_bodtrees, cache = TRUE}
+library(dplyr)
 library(plotly)
 
-plot_ly(mtcars, x = ~wt, y = ~mpg, z=~hp, type = "scatter3d")
+plot_ly(df, 
+        x = ~wt, y = ~mpg, z=~hp,
+        symbol = ~transmission, symbols = c("circle", "diamond"),
+        color = ~cyl, colors = c("red", "blue", "green"),
+        size = ~disp,
+        type = "scatter3d",
+        mode = "markers") %>%
+     layout(scene = list(xaxis = list(title = 'Weight'),
+                         yaxis = list(title = 'Miles per Galon'),
+                         zaxis = list(title = 'Horsepower')))
 ```
