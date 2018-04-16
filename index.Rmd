@@ -1,22 +1,24 @@
 ---
-title: "Week 3 Project"
+title: "Week 3 Project - Plotly"
 author: "Javier González Onrubia"
 date: "Apr. 11th 2018"
-output: html_document
+output: ioslides_presentation
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ```
 
-## Plotly
+## Plotting the `mtdata` dataset
 
-This project uses the `mtdata` dataset to plot 'weight', 'mpg' and
+This project uses the `mtdata` dataset to plot `weight`, `mpg` and
 'horsepower' as a 3D scatterplot. A circle or a diamond is used to
 show if the car uses automatic or manual transmission and the color
 indicates how many cylinders the engine has.
 
-```{r bodtrees_download, cache = TRUE}
+## Tidying up data
+
+```{r tidying_data, cache = TRUE}
 df <- mtcars
 df$transmission <- "Automatic"
 df$transmission[df$am == 0] <- "Manual"
@@ -24,8 +26,9 @@ df$transmission <- as.factor(df$transmission)
 df$cyl <- as.factor(df$cyl)
 ```
 
+## Plotly code
 
-```{r leaflet_bodtrees, cache = TRUE}
+```{r plotly_code, cache = TRUE, eval = FALSE}
 library(dplyr)
 library(plotly)
 
@@ -40,3 +43,24 @@ plot_ly(df,
                          yaxis = list(title = 'Miles per Galon'),
                          zaxis = list(title = 'Horsepower')))
 ```
+
+## Plotly plot
+
+```{r plotly_plot, cache = TRUE, echo = FALSE}
+library(dplyr)
+library(plotly)
+
+plot_ly(df, 
+        x = ~wt, y = ~mpg, z=~hp,
+        symbol = ~transmission, symbols = c("circle", "diamond"),
+        color = ~cyl, colors = c("red", "blue", "green"),
+        size = ~disp,
+        type = "scatter3d",
+        mode = "markers") %>%
+     layout(scene = list(xaxis = list(title = 'Weight'),
+                         yaxis = list(title = 'Miles per Galon'),
+                         zaxis = list(title = 'Horsepower')))
+```
+
+***
+### Thank you
